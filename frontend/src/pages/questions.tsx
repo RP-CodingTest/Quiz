@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import Button from "@material-ui/core/Button";
 
 const { REACT_APP_API_URI, REACT_APP_API_URI_QUESTIONS } = process.env;
 
@@ -21,6 +22,7 @@ function App() {
   const url = `${REACT_APP_API_URI}${REACT_APP_API_URI_QUESTIONS}`;
   const [data, setData] = useState<QuestionEntries[] | null>(null);
   const [loading, setLoading] = useState(true);
+  const [question, setQuestion] = useState(0);
 
   useEffect(() => {
     fetchData(url, setData, setLoading);
@@ -34,10 +36,18 @@ function App() {
     return <div>No data found</div>;
   }
 
+  if (question < data.length) {
+    return (
+      <>
+        <div>{data[question].Question}</div>
+        <Button onClick={() => setQuestion(question + 1)}>Next</Button>
+      </>
+    );
+  }
+
   return (
     <>
-      <div>Questions</div>
-      <div>{data[0].Question}</div>
+      <div>Results</div>
     </>
   );
 }
