@@ -5,6 +5,7 @@ import RadioGroup from "@material-ui/core/RadioGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import FormControl from "@material-ui/core/FormControl";
 import FormLabel from "@material-ui/core/FormLabel";
+import TextField from "@material-ui/core/TextField";
 
 const { REACT_APP_API_URI, REACT_APP_API_URI_QUESTIONS } = process.env;
 
@@ -27,9 +28,15 @@ function App() {
   const url = `${REACT_APP_API_URI}${REACT_APP_API_URI_QUESTIONS}`;
   const [data, setData] = useState<QuestionEntries[] | null>(null);
   const [loading, setLoading] = useState(true);
+  const [name, setName] = useState("");
+  const [nameCompleted, setNameCompleted] = useState(false);
   const [question, setQuestion] = useState(0);
   const [score, setScore] = useState<number>(0);
   const [value, setValue] = React.useState(null);
+
+  const handleNameChange = (event: any) => {
+    setName(event.target.value);
+  };
 
   const handleChange = (event: any) => {
     setValue(event.target.value);
@@ -38,6 +45,27 @@ function App() {
   useEffect(() => {
     fetchData(url, setData, setLoading);
   }, []);
+
+  if (!nameCompleted) {
+    return (
+      <>
+        <div>Welcome to OYNB!!</div>
+        <TextField
+          label="What is your name"
+          variant="filled"
+          value={name}
+          onChange={handleNameChange}
+        />
+        <Button
+          onClick={() => {
+            setNameCompleted(true);
+          }}
+        >
+          Next
+        </Button>
+      </>
+    );
+  }
 
   if (loading) {
     return <div>Loading...</div>;
@@ -50,6 +78,7 @@ function App() {
   if (question < data.length) {
     return (
       <>
+        <div>Points so far: {score}</div>
         <FormControl component="fieldset">
           <FormLabel component="legend">{data[question].Question}</FormLabel>
           <RadioGroup
@@ -83,7 +112,7 @@ function App() {
         <Button
           onClick={() => {
             setQuestion(question + 1);
-            setScore(score + parseInt((value || '0'), 10));
+            setScore(score + parseInt(value || "0", 10));
             setValue(null);
           }}
         >
@@ -95,8 +124,10 @@ function App() {
 
   return (
     <>
-      <div>Results</div>
-      <div>Score {score}</div>
+      <div>Thank you {name}!!</div>
+      <div>
+        You scored {score} points out of {6 * data.length} possible.
+      </div>
     </>
   );
 }
