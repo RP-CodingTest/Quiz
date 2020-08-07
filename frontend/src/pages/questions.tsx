@@ -1,22 +1,6 @@
 import React, { useState, useEffect } from "react";
-import ReactDOM from "react-dom";
 
-const useFetch = (url: string) => {
-  const [data, setData] = useState(null);
-  const [loading, setLoading] = useState(true);
-
-  async function fetchData() {
-    const response = await fetch(url);
-    const json = await response.json();
-    setData(json);
-    setLoading(false)  }
-
-  useEffect(() => {
-    fetchData()
-  }, []);
-
-  return {loading,data};
-};
+const { REACT_APP_API_URI, REACT_APP_API_URI_QUESTIONS } = process.env;
 
 export interface QuestionEntries {
   Question: String;
@@ -26,19 +10,36 @@ export interface QuestionEntries {
   "0 points": String;
 }
 
-function App() {
+async function fetchData(url: string, setData: Function, setLoading: Function) {
+  const response = await fetch(url);
+  const json = await response.json();
+  setData(json);
+  setLoading(false);
+}
 
-  const {loading, data} = useFetch("http://localhost:3001/questions");
+function App() {
+  const url = `${REACT_APP_API_URI}${REACT_APP_API_URI_QUESTIONS}`;
+  const [data, setData] = useState<QuestionEntries[] | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchData(url, setData, setLoading);
+  }, []);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (data === null) {
+    return <div>No data found</div>;
+  }
 
   return (
-    <div>
-      {loading ? <div>Loading...</div> :
-       <ul>
-         Questions
-       </ul>
-      }
-    </div>
-  )
+    <>
+      <div>Questions</div>
+      <div>{data[0].Question}</div>
+    </>
+  );
 }
 
 export default App;
