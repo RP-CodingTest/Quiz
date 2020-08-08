@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import Radio from "@material-ui/core/Radio";
 import RadioGroup from "@material-ui/core/RadioGroup";
@@ -6,8 +7,21 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import FormControl from "@material-ui/core/FormControl";
 import FormLabel from "@material-ui/core/FormLabel";
 import TextField from "@material-ui/core/TextField";
+import Typography from "@material-ui/core/Typography";
 
 const { REACT_APP_API_URI, REACT_APP_API_URI_QUESTIONS } = process.env;
+
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    root: {
+      "& > *": {
+        margin: theme.spacing(3),
+        width: "25ch",
+        color: "white",
+      },
+    },
+  })
+);
 
 export interface QuestionEntries {
   Question: String;
@@ -25,6 +39,7 @@ async function fetchData(url: string, setData: Function, setLoading: Function) {
 }
 
 function App() {
+  const classes = useStyles();
   const url = `${REACT_APP_API_URI}${REACT_APP_API_URI_QUESTIONS}`;
   const [data, setData] = useState<QuestionEntries[] | null>(null);
   const [loading, setLoading] = useState(true);
@@ -43,12 +58,12 @@ function App() {
   };
 
   const clear = () => {
-    setName('');
+    setName("");
     setNameCompleted(false);
     setQuestion(0);
     setScore(0);
     setValue(null);
-  }
+  };
 
   useEffect(() => {
     fetchData(url, setData, setLoading);
@@ -57,15 +72,20 @@ function App() {
   if (!nameCompleted) {
     return (
       <>
-        <div>Welcome to OYNB!!</div>
+        <Typography className={classes.root} variant="h2">
+          Welcome to OYNB!!
+        </Typography>
         <TextField
           label="What is your name"
           variant="filled"
           value={name}
+          className={classes.root}
           onChange={handleNameChange}
         />
         <Button
           name="setName"
+          variant="contained"
+          color="primary"
           onClick={() => {
             setNameCompleted(true);
           }}
@@ -87,13 +107,16 @@ function App() {
   if (question < data.length) {
     return (
       <>
-        <div>Points so far: {score}</div>
-        <FormControl component="fieldset">
+        <Typography className={classes.root} variant="h4">
+          Points so far: {score}
+        </Typography>
+        <FormControl className={classes.root} component="fieldset">
           <FormLabel component="legend">{data[question].Question}</FormLabel>
           <RadioGroup
             aria-label="question"
             name="question"
             value={value}
+            className={classes.root}
             onChange={handleChange}
           >
             <FormControlLabel
@@ -119,6 +142,8 @@ function App() {
           </RadioGroup>
         </FormControl>
         <Button
+          variant="contained"
+          color="primary"
           onClick={() => {
             setQuestion(question + 1);
             setScore(score + parseInt(value || "0", 10));
@@ -133,15 +158,15 @@ function App() {
 
   return (
     <>
-      <div>Thank you {name}!!</div>
-      <div>
+      <Typography className={classes.root} variant="h4">
+        Thank you {name}!!
+      </Typography>
+      <div className={classes.root}>
         You scored {score} points out of {6 * data.length} possible.
-        <Button
-          onClick={() => clear()}
-        >
-          Try again
-        </Button>
       </div>
+      <Button variant="contained" color="primary" onClick={() => clear()}>
+        Try again
+      </Button>
     </>
   );
 }
