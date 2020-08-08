@@ -42,6 +42,14 @@ function App() {
     setValue(event.target.value);
   };
 
+  const clear = () => {
+    setName('');
+    setNameCompleted(false);
+    setQuestion(0);
+    setScore(0);
+    setValue(null);
+  }
+
   useEffect(() => {
     fetchData(url, setData, setLoading);
   }, []);
@@ -57,6 +65,7 @@ function App() {
           onChange={handleNameChange}
         />
         <Button
+          name="setName"
           onClick={() => {
             setNameCompleted(true);
           }}
@@ -127,6 +136,11 @@ function App() {
       <div>Thank you {name}!!</div>
       <div>
         You scored {score} points out of {6 * data.length} possible.
+        <Button
+          onClick={() => clear()}
+        >
+          Try again
+        </Button>
       </div>
     </>
   );
