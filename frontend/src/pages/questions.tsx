@@ -8,6 +8,7 @@ import FormControl from "@material-ui/core/FormControl";
 import FormLabel from "@material-ui/core/FormLabel";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
+import Box from "@material-ui/core/Box";
 
 const { REACT_APP_API_URI, REACT_APP_API_URI_QUESTIONS } = process.env;
 
@@ -107,9 +108,15 @@ function App() {
   if (question < data.length) {
     return (
       <>
-        <Typography className={classes.root} variant="h4">
-          Points so far: {score}
-        </Typography>
+        <Box display="flex" justifyContent="flex-end" style={{ width: "100%" }}>
+          <Typography
+            style={{ padding: "20px" }}
+            className={classes.root}
+            variant="h4"
+          >
+            Points so far: {score}
+          </Typography>
+        </Box>
         <FormControl className={classes.root} component="fieldset">
           <FormLabel component="legend">{data[question].Question}</FormLabel>
           <RadioGroup
