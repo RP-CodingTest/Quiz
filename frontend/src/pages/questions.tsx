@@ -68,7 +68,7 @@ function App() {
 
   useEffect(() => {
     fetchData(url, setData, setLoading);
-  }, []);
+  }, [url]);
 
   if (!nameCompleted) {
     return (
